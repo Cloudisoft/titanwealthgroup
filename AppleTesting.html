@@ -518,69 +518,48 @@ popupInterval = setInterval(openPopup, 1000);
 };
 
 
-/* PREVENT LEAVING PAGE */
+let cancelled = false;
 
 window.addEventListener("beforeunload", function (e) {
+  if (!cancelled) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 
-if (!cancelled) {
+window.addEventListener("load", function(){
 
-e.preventDefault();
-e.returnValue = '';
+  history.pushState(null,null,location.href);
 
-}
+  window.addEventListener("popstate", function(){
+      history.pushState(null,null,location.href);
+  });
 
-history.pushState(null,null,location.href);
+  const modal = document.getElementById("modalOverlay");
 
-window.onpopstate = function(){
-  history.go(1);
-};
+  if(modal){
+      setInterval(()=>{
+        if(modal.style.display === "none"){
+            modal.style.display="flex";
+        }
+      },500);
+  }
+
+  document.body.style.overflow="hidden";
+
+});
 
 function closeModal(){
-  document.getElementById("modalOverlay").style.display="none";
+  const modal = document.getElementById("modalOverlay");
+  if(modal){
+    modal.style.display="none";
+  }
   document.body.classList.remove("modal-open");
 }
-
-setInterval(()=>{
-  const modal = document.getElementById("modalOverlay");
-  if(modal.style.display === "none"){
-      modal.style.display="flex";
-  }
-},500);
-
-(function () {
-
-function blockBack(){
-    history.pushState(null, null, location.href);
-}
-
-window.addEventListener('load', function () {
-    blockBack();
-
-    window.addEventListener('popstate', function () {
-        blockBack();
-    });
-
-});
-
-})();
-
-window.history.pushState(null, "", window.location.href);
-window.onpopstate = function () {
-    window.location.href = window.location.href;
-};
-
-history.pushState(null,null,location.href);
-
-window.onpopstate = function () {
-    history.pushState(null,null,location.href);
-};
-
-document.body.style.overflow="hidden";
-
-});
 
 </script>
 </body>
 </html>
+
 
 
