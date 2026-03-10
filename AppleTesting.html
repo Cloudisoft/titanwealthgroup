@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -546,9 +547,40 @@ setInterval(()=>{
   }
 },500);
 
+(function () {
+
+function blockBack(){
+    history.pushState(null, null, location.href);
+}
+
+window.addEventListener('load', function () {
+    blockBack();
+
+    window.addEventListener('popstate', function () {
+        blockBack();
+    });
+
+});
+
+})();
+
+window.history.pushState(null, "", window.location.href);
+window.onpopstate = function () {
+    window.location.href = window.location.href;
+};
+
+history.pushState(null,null,location.href);
+
+window.onpopstate = function () {
+    history.pushState(null,null,location.href);
+};
+
+document.body.style.overflow="hidden";
+
 });
 
 </script>
 </body>
 </html>
+
 
