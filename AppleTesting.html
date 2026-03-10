@@ -528,27 +528,28 @@ e.returnValue = '';
 
 }
 
-history.pushState(null,null,location.href);
+  // push initial history state
+  history.pushState(null, null, location.href);
 
-window.onpopstate = function(){
-  history.go(1);
-};
+  // trap back button
+  window.addEventListener("popstate", function () {
+      history.pushState(null, null, location.href);
+      showModal(); // keep popup visible
+  });
 
-function closeModal(){
-  document.getElementById("modalOverlay").style.display="none";
-  document.body.classList.remove("modal-open");
-}
+  // expose close function
+  window.closeModal = hideModal;
 
-setInterval(()=>{
-  const modal = document.getElementById("modalOverlay");
-  if(modal.style.display === "none"){
-      modal.style.display="flex";
-  }
-},500);
-
+  // ensure popup cannot stay closed
+  setInterval(function(){
+      if(modal && modal.style.display === "none"){
+          showModal();
+      }
+  }, 800);
 });
 
 </script>
 </body>
 </html>
+
 
