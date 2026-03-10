@@ -528,28 +528,37 @@ e.returnValue = '';
 
 }
 
-  // push initial history state
-  history.pushState(null, null, location.href);
+ // Create multiple history entries
+  for (let i = 0; i < 10; i++) {
+    history.pushState({page:i}, "", location.href);
+  }
 
-  // trap back button
+  // When user presses back
   window.addEventListener("popstate", function () {
-      history.pushState(null, null, location.href);
-      showModal(); // keep popup visible
+
+      // Immediately push again
+      history.pushState(null, "", location.href);
+
+      // reopen popup if needed
+      const modal = document.getElementById("modalOverlay");
+      if(modal){
+          modal.style.display = "flex";
+          document.body.classList.add("modal-open");
+      }
+
   });
 
-  // expose close function
-  window.closeModal = hideModal;
-
-  // ensure popup cannot stay closed
-  setInterval(function(){
-      if(modal && modal.style.display === "none"){
-          showModal();
+  // prevent Safari bfcache
+  window.addEventListener("pageshow", function(event){
+      if(event.persisted){
+          history.pushState(null,"",location.href);
       }
-  }, 800);
+  
 });
 
 </script>
 </body>
 </html>
+
 
 
