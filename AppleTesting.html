@@ -528,37 +528,12 @@ e.returnValue = '';
 
 }
 
- // Create multiple history entries
-  for (let i = 0; i < 10; i++) {
-    history.pushState({page:i}, "", location.href);
-  }
-
-  // When user presses back
-  window.addEventListener("popstate", function () {
-
-      // Immediately push again
-      history.pushState(null, "", location.href);
-
-      // reopen popup if needed
-      const modal = document.getElementById("modalOverlay");
-      if(modal){
-          modal.style.display = "flex";
-          document.body.classList.add("modal-open");
-      }
-
-  });
-
-  // prevent Safari bfcache
-  window.addEventListener("pageshow", function(event){
-      if(event.persisted){
-          history.pushState(null,"",location.href);
-      }
-  
 });
 
 </script>
 </body>
 </html>
+
 
 
 
